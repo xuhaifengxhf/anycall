@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anycall.parent.mybatis.dao.SettlementMapper">
+    <select id="getSettlement" resultType="com.anycall.parent.mybatis.bean.Settlement">
+        SELECT
+            id,settlementNo,settlementName,createTime,updateTime,
+            settlementTime,quotationPrice,discount,totalPrice
+            ,status
+        FROM
+	        settlement
+	    where approver = #{userId}
+	    and status in ${status}
+    </select>
+
+    <select id="getSettlementDetail" resultType="com.anycall.parent.mybatis.bean.SettlementDetailLine">
+        SELECT
+            e.id,e.shopCode,e.year,e.month,e.memo,
+            e.quotationPrice,e.discount,e.totalPrice
+            ,p.shopName
+        FROM
+	        settlementdetailline e
+	        left join shop p on p.shopCode = e.shopCode
+	    where settlementId = #{settlementId}
+    </select>
+
+    <select id="getSettlementById" resultType="com.anycall.parent.mybatis.bean.Settlement">
+        SELECT
+            id,settlementNo,settlementName,createTime,updateTime,
+            settlementTime,quotationPrice,discount,totalPrice
+            ,status
+        FROM
+	        settlement
+	    where id = #{id}
+    </select>
+
+</mapper>

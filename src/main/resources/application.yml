@@ -1,0 +1,57 @@
+#spring boot file config
+#spring.http.multipart.max-file-size=100MB
+#spring.http.multipart.max-request-size=200MB
+spring:
+  http:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 200MB
+  datasource:
+     url: jdbc:mysql://uat.any-call.com:53306/anycall30?serverTimezone=GMT%2B8&characterEncoding=utf-8
+     username: anycall30_readonly
+     password: readonly!@#
+     driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+
+# mybatis
+mybatis:
+  type-aliases-package: com.anycall.parent.mybatis.bean
+  mapper-locations: classpath:mapper/*.xml
+
+
+# jwt config
+#jwt.header=Authorization
+#jwt.secret=platformParentSecretKey
+#jwt.expiration=259200
+#jwt.token-head="Bearer "
+jwt:
+  header: Authorization
+  secret: platformParentSecretKey
+  expiration: 259200
+  tokenHead: "Bearer "
+#server:
+#  port: 8081
+#  ssl:
+#    key-store: keystore.p12
+#    key-store-password: mxjzqk
+#    key-store-type: PKCS12
+#    key-alias: tomcat
+logging:
+  file: ../logs/anycall.log
+
+anycalloss:
+  rememberme-cookie-key: anycall
+  rememberme-cookie-valid-in-days: 31
+  login-lock-attempts: 10
+  login-lock-minutes: 30
+  oss-access-key-id: VFTkepuoeIdJ7h2K
+  oss-access-key-secret: OZk4GcT6jv0sSyjYQyxW2jLaLsDr2D
+  oss-host-site: http://drp2.oss-cn-shanghai.aliyuncs.com
+  oss-end-point: http://oss-cn-shanghai.aliyuncs.com
+  oss-bucket-name: drp2
+  oss-image-folder: images
+  oss-voice-folder: voices
+  oss-video-folder: videos
+  oss-temp-folder: temp
+  oss-files-folder: files

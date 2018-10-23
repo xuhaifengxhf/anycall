@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anycall.parent.mybatis.dao.ServiceOrderMapper">
+    <select id="getList" resultType="com.anycall.parent.mybatis.bean.SortList"
+            parameterType="com.anycall.parent.request.serviceOrder.ServiceOrderRequest">
+        SELECT
+        id,
+        sortNo,
+        repairCode,
+        reportMan,
+        `status`,
+        reportTime,
+        updateTime,
+        faultDescription
+        FROM
+        sortlist
+        where shopCode = #{shopCode}
+        <if test="sortStatus !=null and sortStatus.length()!=0 ">
+            and status = #{sortStatus}
+        </if>
+        <if test="startDate != null">
+            <![CDATA[AND reportTime >= #{startDate}]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[AND reportTime <= #{endDate}]]>
+        </if>
+        <if test="sortNo !=null and sortNo.length()!=0 ">
+            and (sortNo like CONCAT('%',#{sortNo},'%')
+            or (repairCode in (select SUBSTRING_INDEX(r.serviceOrderNo,'-',1) as 'sortNo'
+            from serviceorder r where r.failure like CONCAT('%',#{sortNo},'%') or r.serviceOrderno like
+            CONCAT('%',#{sortNo},'%') )))
+        </if>
+        <if test="orderStatus !=null and orderStatus.length()!=0 ">
+            and repairCode in (select SUBSTRING_INDEX(r.serviceOrderNo,'-',1) as 'sortNo'
+            from serviceorder r where r.shopCode = #{shopCode} and r.status = #{orderStatus} )
+        </if>
+        <if test="descFlag !=null and descFlag.length()!=0 and descFlag=='desc'">
+            order by reportTime desc
+        </if>
+        <if test="descFlag !=null and descFlag.length()!=0 and descFlag=='asc'">
+            order by reportTime
+        </if>
+        <if test="descFlag ==null">
+            order by reportTime desc
+        </if>
+        limit #{start},#{end}
+    </select>
+
+    <select id="getListCount" resultType="java.lang.Integer"
+            parameterType="com.anycall.parent.request.serviceOrder.ServiceOrderRequest">
+        SELECT
+        count(1)
+        FROM
+        sortlist
+        where shopCode = #{shopCode}
+        <if test="sortNo !=null and sortNo.length()!=0 ">
+            and (sortNo like CONCAT('%',#{sortNo},'%')
+            or (repairCode in (select SUBSTRING_INDEX(r.serviceOrderNo,'-',1) as 'sortNo'
+            from serviceorder r where r.failure like CONCAT('%',#{sortNo},'%') or r.serviceOrderno like
+            CONCAT('%',#{sortNo},'%') )))
+        </if>
+        <if test="orderStatus !=null and orderStatus.length()!=0 ">
+            and repairCode in (select SUBSTRING_INDEX(r.serviceOrderNo,'-',1) as 'sortNo'
+            from serviceorder r where r.shopCode = #{shopCode} and r.status = #{orderStatus} )
+        </if>
+        <if test="startDate != null">
+            <![CDATA[AND reportTime >= #{startDate}]]>
+        </if>
+        <if test="endDate != null">
+            <![CDATA[AND reportTime <= #{endDate}]]>
+        </if>
+    </select>
+
+    <select id="getFileSourceList" resultType="java.lang.String">
+        SELECT
+        url
+        FROM
+        fileresource
+        where modelId = #{modelId}
+        and modelType = #{modelType}
+        and type = #{type}
+    </select>
+
+    <select id="getFileSourceListSound" resultType="com.anycall.parent.mybatis.bean.FileResource">
+        SELECT
+        url,soundLength
+        FROM
+        fileresource
+        where modelId = #{modelId}
+        and modelType = #{modelType}
+        and type = #{type}
+    </select>
+
+    <select id="getServiceOrder" resultType="com.anycall.parent.mybatis.bean.ServiceOrder">
+        SELECT
+        id,
+        serviceOrderNo,
+        `status`,failure,`desc`,reportTime
+        FROM
+        serviceorder
+        where serviceOrderNo like CONCAT('%',#{repairCode},'%')
+        <if test="orderStatus !=null and orderStatus.length()!=0 ">
+            and status = #{orderStatus}
+        </if>
+        <if test="failure !=null and failure.length()!=0 ">
+            and ( failure like CONCAT('%',#{failure},'%') or serviceOrderNo like CONCAT('%',#{failure},'%') )
+        </if>
+    </select>
+
+    <select id="getOrderById" resultType="com.anycall.parent.mybatis.bean.ServiceOrder">
+            SELECT
+            id,
+            serviceOrderNo,
+            reportManTel,
+            reportMan,
+            `status`,
+            reportTime,
+            updateTime,
+            failure,
+            `desc`,arriveTime,allin
+            FROM
+            serviceorder
+            where id = #{id}
+    </select>
+
+    <select id="getBizLogs" resultType="com.anycall.parent.mybatis.bean.BizLog">
+            SELECT
+            memo,logTime,method
+            FROM
+            bizlog
+            where modelType = #{modelType} and modelId = #{modelId}
+            order  by logTime desc
+    </select>
+
+    <select id="getFacility" resultType="com.anycall.parent.mybatis.bean.FacilityInfo">
+            SELECT
+            facilityName,facilityType,facilityNo,facilityVendor
+            FROM
+            facilityinfo
+            where facilityNo = #{facilityNo}
+            limit 1
+    </select>
+
+    <select id="getToken" resultType="com.anycall.parent.mybatis.bean.TokenInfo">
+            SELECT
+            *
+            FROM
+            tokenInfo
+            where loginName = #{loginName}
+            order by id desc
+            limit 1
+    </select>
+</mapper>
